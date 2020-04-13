@@ -6,7 +6,7 @@ class About extends React.Component {
             <div>
                 <h2>About</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium adipisci assumenda consectetur deleniti enim, harum illo impedit in incidunt ipsa molestiae nam placeat provident quae quas reprehenderit, repudiandae sunt vitae.
+                    an ordinary man who want to be human.
                 </p>
             </div>
         )

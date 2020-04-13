@@ -1,5 +1,5 @@
 import React from "react";
-import {HashRouter,NavLink,Route} from "react-router-dom";
+import {HashRouter,NavLink} from "react-router-dom";
 
 class AppHeader extends React.Component {
     render() {
@@ -24,6 +24,10 @@ class AppHeader extends React.Component {
                             <li className="nav-item">
                                 {/*<a className="nav-link" href="/contact">Contact</a>*/}
                                 <NavLink to="/contact" className="nav-link">Contact</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                {/*<a className="nav-link" href="/crud">Crud</a>*/}
+                                <NavLink to="/crud" className="nav-link">Crud</NavLink>
                             </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
