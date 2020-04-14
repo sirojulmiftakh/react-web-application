@@ -4,3 +4,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - templating react + bootstrap 4
 - navigation in single page with router
 - simple crud with api gateway
+- request handler with cors

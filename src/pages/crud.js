@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Table, Button, Alert} from "react-bootstrap";
+import $ from "jquery";
 
 class Crud extends React.Component {
     constructor(props) {
@@ -10,6 +11,48 @@ class Crud extends React.Component {
             response: {}
         }
         this.deleteTodos = this.deleteTodos.bind(this);
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/x-www-form-urlencoded");
+
+        const title = event.target.title.value;
+        const description = event.target.description.value;
+        const apiUrl = "http://localhost:8080/todo/save";
+
+        var body = new URLSearchParams({
+            title: title,
+            description: description
+        });
+
+        const options = {
+            method: "POST",
+            body: body.toString(),
+            headers
+        }
+        fetch(apiUrl, options)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log(result);
+                    this.componentDidMount();
+                },
+                (error) => {
+                    this.setState({error});
+                }
+            )
+        alert('data was submitted');
     }
 
     componentDidMount() {
@@ -31,19 +74,17 @@ class Crud extends React.Component {
     deleteTodos(id) {
         const {todos} = this.state;
         const apiUrl = "http://localhost:8080/todo/delete/" + id;
-        const formData = new FormData();
-        formData.append('id', id);
         const options = {
-            method: "DELETE",
-            body: formData
+            method: "DELETE"
         }
-        fetch(apiUrl,options)
+        fetch(apiUrl, options)
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
                         response: result
                     });
+                    this.componentDidMount();
                 },
                 (error) => {
                     this.setState({error});
@@ -52,6 +93,7 @@ class Crud extends React.Component {
     }
 
     render() {
+
         const {error, todos} = this.state;
         if (error) {
             return (
@@ -61,6 +103,17 @@ class Crud extends React.Component {
             return (
                 <div>
                     <h2>Todos List</h2>
+                    <form action="" onSubmit={this.handleSubmit}>
+                        <div className={"form-group"}>
+                            <input required={true} type="text" name={"title"}
+                                   defaultValue={this.state.title}/>
+                        </div>
+                        <div className={"form-group"}>
+                            <input required={true} type="text" name={"description"}
+                                   defaultValue={this.state.description}/>
+                        </div>
+                        <button className={"btn btn-primary"} type={"submit"}>submit</button>
+                    </form>
                     <Table>
                         <thead>
                         <tr>
