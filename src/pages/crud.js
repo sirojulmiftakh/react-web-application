@@ -8,10 +8,12 @@ class Crud extends React.Component {
         this.state = {
             error: null,
             todos: [],
-            response: {}
+            response: {},
+            isAddTodos: false,
+            isEditTodos: false,
+            id: ''
         }
         this.deleteTodos = this.deleteTodos.bind(this);
-
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -23,21 +25,42 @@ class Crud extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
+        let API;
+        let method;
+        let body;
+
+        if (this.state.isEditTodos) {
+            method = "PUT";
+            API = "http://localhost:8080/todo/update";
+
+            const id = this.state.id;
+            const title = event.target.title.value;
+            const description = event.target.description.value;
+            body = new URLSearchParams({
+                id: id,
+                title: title,
+                description: description
+            });
+        } else {
+            method = "POST";
+            API = "http://localhost:8080/todo/save";
+
+            const title = event.target.title.value;
+            const description = event.target.description.value;
+            body = new URLSearchParams({
+                title: title,
+                description: description
+            });
+        }
+
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/x-www-form-urlencoded");
 
-        const title = event.target.title.value;
-        const description = event.target.description.value;
-        const apiUrl = "http://localhost:8080/todo/save";
-
-        var body = new URLSearchParams({
-            title: title,
-            description: description
-        });
+        const apiUrl = API;
 
         const options = {
-            method: "POST",
+            method: method,
             body: body.toString(),
             headers
         }
@@ -92,6 +115,33 @@ class Crud extends React.Component {
             )
     }
 
+    editTodos(id) {
+        const {todos} = this.state;
+        const apiUrl = "http://localhost:8080/todo/" + id;
+        const options = {
+            method: "GET"
+        }
+        fetch(apiUrl, options)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        response: result
+                    });
+                    this.setState({
+                        id: this.state.id = result.data.id,
+                        title: this.state.title = result.data.title,
+                        description: this.state.description = result.data.description,
+                    });
+                    this.state.isEditTodos = true;
+                    console.log(result.data);
+                },
+                (error) => {
+                    this.setState({error});
+                }
+            )
+    }
+
     render() {
 
         const {error, todos} = this.state;
@@ -103,7 +153,7 @@ class Crud extends React.Component {
             return (
                 <div>
                     <h2>Todos List</h2>
-                    <form action="" onSubmit={this.handleSubmit}>
+                    <form id={"myform"} action="" onSubmit={this.handleSubmit}>
                         <div className={"form-group"}>
                             <input required={true} type="text" name={"title"}
                                    defaultValue={this.state.title}/>
@@ -132,7 +182,7 @@ class Crud extends React.Component {
                                     <td>{todo.description}</td>
                                     <td>
                                         <Button variant="info"
-                                                onClick={() => this.props.editTodos(todo.id)}>Edit</Button>
+                                                onClick={() => this.editTodos(todo.id)}>Edit</Button>
                                         <Button variant="danger"
                                                 onClick={() => this.deleteTodos(todo.id)}>Delete</Button>
                                     </td>
